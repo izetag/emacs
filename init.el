@@ -1,4 +1,3 @@
-(setq debug-on-error t)
 (setq-default indent-tabs-mode nil)
 (set-scroll-bar-mode 'right)
 (column-number-mode t)
@@ -12,7 +11,7 @@
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 
 (defvar my-packages '(better-defaults paredit idle-highlight-mode ido-ubiquitous
-                                      find-file-in-project magit smex scpaste load-dir))
+                                      find-file-in-project smex scpaste load-dir))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
@@ -21,6 +20,7 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'erase-buffer 'disabled nil)
 
+(add-hook 'prog-mode-hook #'linum-on)
 
 (package-initialize)
 (dolist (p my-packages)
