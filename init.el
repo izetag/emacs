@@ -20,6 +20,7 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'erase-buffer 'disabled nil)
 
+(require 'linum)
 (add-hook 'prog-mode-hook #'linum-on)
 
 (package-initialize)
