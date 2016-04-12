@@ -65,6 +65,11 @@
 (setq ido-enable-flex-matching t)
 (setq ido-use-faces nil)
 
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+
 ;; supporting projects
 (require 'projectile)
 (projectile-global-mode)
@@ -79,4 +84,13 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+
+;; Setting custom font
+;; Click [here](https://github.com/hbin/dotfiles-for-emacs) to take a further look.
+(set-frame-font "DejaVu Sans Mono:pixelsize=18")
+
+;; If you use Emacs Daemon mode
+(add-to-list 'default-frame-alist
+               (cons 'font "DejaVu Sans Mono:pixelsize=18"))
 
