@@ -10,24 +10,27 @@
   (require 'package)
   (add-to-list
    'package-archives
-   '("melpa" . "http://melpa.org/packages/")
-   t)
-  (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+   '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list
+   'package-archives
+   '("marmalade" . "https://marmalade-repo.org/packages/"))
   (package-initialize))
 
 
-(defvar my-packages '(better-defaults paredit
-                                      idle-highlight-mode
-                                      ido-ubiquitous
-                                      find-file-in-project
-                                      smex
-                                      scpaste
-                                      load-dir
-                                      yaml-mode
-                                      projectile
-                                      flx-ido
-                                      exec-path-from-shell
-                                      google-c-style))
+(defvar my-packages '(better-defaults
+                      paredit
+                      idle-highlight-mode
+                      ido-ubiquitous
+                      find-file-in-project
+                      smex
+                      scpaste
+                      load-dir
+                      yaml-mode
+                      projectile
+                      flx-ido
+                      ido-vertical-mode
+                      exec-path-from-shell
+                      google-c-style))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
