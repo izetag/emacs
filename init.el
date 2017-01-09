@@ -1,3 +1,5 @@
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
 (setq-default indent-tabs-mode nil)
 (set-scroll-bar-mode 'right)
 (column-number-mode t)
