@@ -1,20 +1,24 @@
 (setq-default indent-tabs-mode nil)
+(setq tramp-verbose 10)
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 (set-scroll-bar-mode 'right)
 (column-number-mode t)
 (if (load "mwheel" t)
     (mwheel-install))
 
 (setq backup-by-copying-when-linked t)
-(setq backup-by-copying-when-mismatch)
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (add-to-list
-   'package-archives
-   '("melpa" . "http://melpa.org/packages/"))
-  (add-to-list
-   'package-archives
-   '("marmalade" . "https://marmalade-repo.org/packages/"))
-  (package-initialize))
+(setq backup-by-copying-when-mismatch t)
+(setq load-dirs t)
+;; package and repositories set up
+(require 'package)
+(add-to-list
+ 'package-archives
+ '("melpa" . "http://melpa.org/packages/"))
+(add-to-list
+ 'package-archives
+ '("marmalade" . "https://marmalade-repo.org/packages/"))
+(package-initialize)
+(package-refresh-contents)
 
 
 (defvar my-packages '(better-defaults
@@ -30,7 +34,9 @@
                       flx-ido
                       ido-vertical-mode
                       exec-path-from-shell
-                      google-c-style))
+                      google-c-style
+                      load-dir
+                      use-package))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
