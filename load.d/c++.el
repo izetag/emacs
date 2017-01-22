@@ -18,6 +18,7 @@
             '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
 (add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'flycheck-mode)
 
 ;; replace the `completion-at-point' and `complete-symbol' bindings in
 ;; irony-mode's buffers by irony-mode's function
