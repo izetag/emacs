@@ -1,3 +1,5 @@
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
 (setq-default indent-tabs-mode nil)
 (setq tramp-verbose 10)
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
