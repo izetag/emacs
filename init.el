@@ -1,13 +1,14 @@
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 (setq-default indent-tabs-mode nil)
+(server-start nil t)
 (set-scroll-bar-mode 'right)
 (column-number-mode t)
 (if (load "mwheel" t)
     (mwheel-install))
 
 (setq backup-by-copying-when-linked t)
-(setq backup-by-copying-when-mismatch)
+(setq backup-by-copying-when-mismatch t)
 (when (>= emacs-major-version 24)
   (require 'package)
   (add-to-list
@@ -18,6 +19,8 @@
    '("marmalade" . "https://marmalade-repo.org/packages/"))
   (package-initialize))
 
+(require 'rtags)
+(rtags-diagnostics)
 
 (defvar my-packages '(better-defaults
                       paredit
@@ -32,10 +35,14 @@
                       flx-ido
                       ido-vertical-mode
                       exec-path-from-shell
-                      google-c-style))
+                      google-c-style
+                      key-chord))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
+
+;; (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running) 
+;; (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
 
 (setq backup-by-copying-when-linked t)
 (put 'narrow-to-region 'disabled nil)
@@ -111,3 +118,52 @@
                      (looking-at ".*[(,][ \t]*\\[[^]]*\\][ \t]*[({][^}]*$"))))
             0                           ; no additional indent
           ad-do-it)))                   ; default behavior
+
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.saves"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; use versioned backups
+
+(require 'key-chord)
+(add-hook 'c-mode-common-hook '(lambda ()
+                                 (key-chord-mode t)))
+(key-chord-define c++-mode-map "df" 'rtags-find-symbol-at-point)
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+(global-set-key (kbd "C-s-<left>") 'previous-buffer)
+(global-set-key (kbd "C-s-<right>") 'next-buffer)
+(global-set-key (kbd "C-s-<down>") 'ff-find-other-file)
+(global-set-key (kbd "C-s-<up>") 'ff-find-other-file)
+(global-set-key (kbd "C-s-R") 'rtags-find-references-at-point)
+
+(defun show-file-name ()
+  "Show the full path file name in the minibuffer."
+  (interactive)
+  (message (buffer-file-name)))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
+
+(require 'rtags)
+(require 'company-rtags)
+
+(setq rtags-completions-enabled t)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends 'company-rtags))
+(setq rtags-autostart-diagnostics t)
+(rtags-enable-standard-keybindings)
+(setq rtags-use-helm t)
+
+(require 'flycheck-rtags)
+
+(require 'icicles)
+(icy-mode 1)
+
