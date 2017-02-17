@@ -48,7 +48,7 @@
 (setq custom-file my-custom-file)
 (load custom-file t)
 
-;; (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running) 
+;; (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
 ;; (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
 
 (setq backup-by-copying-when-linked t)
@@ -174,3 +174,19 @@
 (require 'icicles)
 (icy-mode 1)
 
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs lines-tail trailing))
+(setq whitespace-line-column 120)
+(global-whitespace-mode t)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(defun copy-word (&optional arg)
+      "Copy words at point into kill-ring"
+       (interactive "P")
+       (copy-thing 'backward-word 'forward-word arg)
+       ;;(paste-to-mark arg)
+     )
+(global-set-key (kbd "C-c w") (quote copy-word))
+
+(setq create-lockfiles nil)

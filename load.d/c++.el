@@ -16,9 +16,17 @@
   :defer t
   :config (eval-after-load 'flycheck
             '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
-
-(add-hook 'c++-mode-hook 'irony-mode)
+(use-package rtags
+  :ensure t
+  :defer t)
+;; (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c++-mode-hook 'flycheck-mode)
+
+(require 'rtags)
+(require 'rtags-helm)
+(setq rtags-autostart-diagnostics t)
+(rtags-enable-standard-keybindings)
+(setq rtags-use-helm t)
 
 ;; replace the `completion-at-point' and `complete-symbol' bindings in
 ;; irony-mode's buffers by irony-mode's function
@@ -29,4 +37,14 @@
     'irony-completion-at-point-async))
 (add-hook 'irony-mode-hook 'my-irony-mode-hook)
 (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+
+(c-add-style "ya-style"
+             '("k&r"
+               (indent-tabs-mode . nil)
+               (c-basic-offset . 4),
+               (c-continued-statement-offset . +)
+               (c-offsets-alist
+                (arglist-cont . +)
+                (arglist-cont-nonempty . +))))
 
