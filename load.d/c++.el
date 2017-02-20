@@ -20,13 +20,13 @@
   :ensure t
   :defer t)
 ;; (add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c++-mode-hook 'flycheck-mode)
+;; (add-hook 'c++-mode-hook 'flycheck-mode)
 
-(require 'rtags)
-(require 'rtags-helm)
-(setq rtags-autostart-diagnostics t)
-(rtags-enable-standard-keybindings)
-(setq rtags-use-helm t)
+;; (require 'rtags)
+;; (require 'rtags-helm)
+;; (setq rtags-autostart-diagnostics t)
+;; (rtags-enable-standard-keybindings)
+;; (setq rtags-use-helm t)
 
 ;; replace the `completion-at-point' and `complete-symbol' bindings in
 ;; irony-mode's buffers by irony-mode's function
@@ -47,4 +47,3 @@
                (c-offsets-alist
                 (arglist-cont . +)
                 (arglist-cont-nonempty . +))))
-

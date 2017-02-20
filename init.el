@@ -4,7 +4,11 @@
 (server-start nil t)
 (setq tramp-verbose 10)
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
-(set-scroll-bar-mode 'right)
+;; if we're on graphic display
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode -1)
+      (set-scroll-bar-mode 'right)))
 (column-number-mode t)
 (if (load "mwheel" t)
     (mwheel-install))
