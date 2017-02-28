@@ -16,6 +16,7 @@
 (setq backup-by-copying-when-linked t)
 (setq backup-by-copying-when-mismatch t)
 (setq load-dirs t)
+(setq vc-handled-backends nil)
 
 ;; package and repositories set up
 (require 'package)
@@ -26,10 +27,7 @@
  'package-archives
  '("marmalade" . "https://marmalade-repo.org/packages/"))
 (package-initialize)
-(package-refresh-contents)
-
-(require 'rtags)
-(rtags-diagnostics)
+;; (package-refresh-contents)
 
 (defvar my-packages '(better-defaults
                       paredit
@@ -51,9 +49,6 @@
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
-
-;; (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
-;; (add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
 
 (setq backup-by-copying-when-linked t)
 (put 'narrow-to-region 'disabled nil)
@@ -142,16 +137,12 @@
 (require 'key-chord)
 (add-hook 'c-mode-common-hook '(lambda ()
                                  (key-chord-mode t)))
-(key-chord-define c++-mode-map "df" 'rtags-find-symbol-at-point)
-
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 (global-set-key (kbd "C-s-<left>") 'previous-buffer)
 (global-set-key (kbd "C-s-<right>") 'next-buffer)
 (global-set-key (kbd "C-s-<down>") 'ff-find-other-file)
 (global-set-key (kbd "C-s-<up>") 'ff-find-other-file)
-(global-set-key (kbd "C-s-R") 'rtags-find-references-at-point)
-
 (defun show-file-name ()
   "Show the full path file name in the minibuffer."
   (interactive)
@@ -161,20 +152,7 @@
           (lambda ()
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
               (ggtags-mode 1))))
-
-(require 'rtags)
-(require 'company-rtags)
-
-(setq rtags-completions-enabled t)
-(eval-after-load 'company
-  '(add-to-list
-    'company-backends 'company-rtags))
-(setq rtags-autostart-diagnostics t)
-(rtags-enable-standard-keybindings)
-(setq rtags-use-helm t)
-
-(require 'flycheck-rtags)
-
+(setq company-dabbrev-downcase nil)
 (require 'icicles)
 (icy-mode 1)
 
@@ -194,3 +172,7 @@
 (global-set-key (kbd "C-c w") (quote copy-word))
 
 (setq create-lockfiles nil)
+;; load local config if exists
+(let ((local-settings "~/.emacs.local"))
+  (if (file-exists-p local-settings)
+  (load-file local-settings)))
