@@ -45,7 +45,8 @@
                       google-c-style
                       key-chord
                       load-dir
-                      use-package))
+                      use-package
+                      icicles))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
