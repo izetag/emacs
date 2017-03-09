@@ -1,14 +1,15 @@
+(if (display-graphic-p)
+    (progn
+      (menu-bar-mode -1)
+      (tool-bar-mode -1)
+      (set-scroll-bar-mode 'right)))
+
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 (setq-default indent-tabs-mode nil)
-(server-start nil t)
 (setq tramp-verbose 10)
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 ;; if we're on graphic display
-(if (display-graphic-p)
-    (progn
-      (tool-bar-mode -1)
-      (set-scroll-bar-mode 'right)))
 (column-number-mode t)
 (if (load "mwheel" t)
     (mwheel-install))
@@ -46,7 +47,8 @@
                       key-chord
                       load-dir
                       use-package
-                      icicles))
+                      icicles
+                      helm-flx))
 (defconst my-custom-file "~/.emacs.d/custom.el")
 (setq custom-file my-custom-file)
 (load custom-file t)
@@ -68,30 +70,16 @@
     (package-install p)))
 (load-theme 'misterioso t)
 
-                                        ; recent list
+;; Save point position between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name ".places" user-emacs-directory))
+;; recent list
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 (run-at-time nil (* 5 60) 'recentf-save-list)
-
-;; better fuzzy matching
-(require 'flx-ido)
-(ido-mode 1)
-(ido-everywhere 1)
-(flx-ido-mode 1)
-;; disable ido faces to see flx highlights.
-(setq ido-enable-flex-matching t)
-(setq ido-use-faces nil)
-
-(require 'ido-vertical-mode)
-(ido-mode 1)
-(ido-vertical-mode 1)
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
-
-;; supporting projects
-(require 'projectile)
-(projectile-global-mode)
 
 ;; environment variabes from shell on mac
 (when (memq window-system '(mac ns))
@@ -154,12 +142,11 @@
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
               (ggtags-mode 1))))
 (setq company-dabbrev-downcase nil)
-(require 'icicles)
-(icy-mode 1)
 
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
 (setq whitespace-line-column 120)
+(setq delete-trailing-lines nil)
 (global-whitespace-mode t)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -177,3 +164,20 @@
 (let ((local-settings "~/.emacs.local"))
   (if (file-exists-p local-settings)
   (load-file local-settings)))
+
+(use-package edit-server
+  :if window-system
+  :init
+  (add-hook 'after-init-hook 'server-start t)
+  (add-hook 'after-init-hook 'edit-server-start t))
+
+(use-package helm-config
+  :init
+  (setq helm-mode-fuzzy-match t)
+  :bind
+  ("M-x" . helm-M-x)
+  ("C-x C-f" . helm-find-files)
+  ("C-x C-r" . helm-recentf)
+  :config
+  (helm-mode 1))
+
