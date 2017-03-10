@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-fuzzier benchmark-init rainbow-identifiers rainbow-delimiters rainbow-blocks rainbow-mode multiple-cursors protobuf-mode rtags-helm flycheck-irony company-irony irony irony-mode company use-package yaml-mode smex scpaste projectile paredit matlab-mode load-dir ido-vertical-mode ido-ubiquitous ido-better-flex idle-highlight-mode google-c-style flx-ido find-file-in-project exec-path-from-shell better-defaults))))
+    (multiple-cursors rtags helm-fuzzier benchmark-init rainbow-identifiers rainbow-delimiters rainbow-blocks rainbow-mode protobuf-mode rtags-helm flycheck-irony company-irony irony irony-mode company use-package yaml-mode smex scpaste projectile paredit matlab-mode load-dir ido-vertical-mode ido-ubiquitous ido-better-flex idle-highlight-mode google-c-style flx-ido find-file-in-project exec-path-from-shell better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
