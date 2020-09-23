@@ -45,5 +45,8 @@
                (c-basic-offset . 4),
                (c-continued-statement-offset . +)
                (c-offsets-alist
-                (arglist-cont . +)
-                (arglist-cont-nonempty . +))))
+                (arglist-intro . +)
+                (arglist-cont . 0)
+                (arglist-cont-nonempty . +)
+                (arglist-close . c-lineup-close-paren)
+                (inline-open . 0))))
