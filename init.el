@@ -208,9 +208,9 @@
   (projectile-mode +1)
   (add-to-list 'projectile-globally-ignored-directories "remote"))
 
-(use-package helm-projectile
-  :config
-  (helm-projectile-on))
+;; (use-package helm-projectile
+;;   :config
+;;   (helm-projectile-on))
 
 (use-package tramp
   :ensure nil
