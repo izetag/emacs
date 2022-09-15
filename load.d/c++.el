@@ -19,6 +19,27 @@
 (use-package rtags
   :ensure t
   :defer t)
+
+(use-package clang-format
+  :ensure t
+  :defer t)
+
+(defun clang-format-save-hook-for-this-buffer ()
+  "Create a buffer local save hook."
+  (add-hook 'before-save-hook
+    (lambda ()
+      (progn
+        (when (locate-dominating-file "." ".clang-format")
+          (clang-format-buffer))
+        ;; Continue to save.
+        nil))
+    nil
+    ;; Buffer local hook.
+    t))
+
+;; Run this for each mode you want to use the hook.
+(add-hook 'c-mode-hook (lambda () (clang-format-save-hook-for-this-buffer)))
+(add-hook 'c++-mode-hook (lambda () (clang-format-save-hook-for-this-buffer)))
 ;; (add-hook 'c++-mode-hook 'irony-mode)
 ;; (add-hook 'c++-mode-hook 'flycheck-mode)
 

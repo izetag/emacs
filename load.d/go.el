@@ -1,16 +1,6 @@
-(use-package go-mode)
-(use-package lsp-mode
+(use-package go-mode
   :ensure t
-  :commands (lsp lsp-deferred)
-  :hook (go-mode . lsp-deferred))
-
-;;Set up before-save hooks to format buffer and add/delete imports.
-;;Make sure you don't have other gofmt/goimports hooks enabled.
-
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  :defer t)
 
 ;;Optional - provides fancier overlays.
 
@@ -29,10 +19,6 @@
   :config
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 1))
-
-(use-package company-lsp
-  :ensure t
-  :commands company-lsp)
 
 ;;Optional - provides snippet support.
 

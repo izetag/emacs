@@ -3,14 +3,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(nsm-settings-file "~/.emacs.local.d/var/nsm-settings.el")
  '(package-selected-packages
-   (quote
-    (company-lsp lsp-ui lsp-mode go-flycheck go-flymake go helm-config auto-package-update helm-smex helm-projectile go-mode editorconfig helm-flx icicles key-chord edit-server nginx-mode yasnippet helm-tramp google ack helm-ack json-mode indent-guide cmake-mode column-enforce-mode fill-column-indicator shrink-whitespace ggtags ztree spaceline all-the-icons multiple-cursors rtags helm-fuzzier benchmark-init rainbow-identifiers rainbow-delimiters rainbow-blocks rainbow-mode protobuf-mode rtags-helm flycheck-irony company-irony irony irony-mode company use-package yaml-mode smex scpaste projectile paredit matlab-mode load-dir ido-vertical-mode ido-ubiquitous ido-better-flex idle-highlight-mode google-c-style flx-ido find-file-in-project exec-path-from-shell better-defaults)))
- '(recentf-auto-cleanup (quote never))
+   '(impatient-mode go-mode yasnippet company-lsp lsp-ui editorconfig rtags flycheck-irony company-irony company irony no-littering yaml-mode use-package-ensure-system-package paredit load-dir key-chord idle-highlight-mode helm-smex helm-projectile helm-flx google-c-style exec-path-from-shell better-defaults auto-package-update ace-window))
+ '(package-user-dir "~/.emacs.local.d/elpa")
+ '(recentf-auto-cleanup 'never)
  '(recentf-max-saved-items 100)
- '(whitespace-style
-   (quote
-    (face trailing tabs spaces lines-tail empty big-indent))))
+ '(whitespace-style '(face trailing tabs spaces lines-tail empty big-indent)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

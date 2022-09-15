@@ -1,35 +1,45 @@
-;; package and repositories set up
-(require 'package)
-(add-to-list
- 'package-archives
- '("melpa" . "http://melpa.org/packages/"))
-(add-to-list
- 'package-archives
- '("marmalade" . "https://marmalade-repo.org/packages/"))
-(defvar my-packages '(
-                      auto-package-update
-                      better-defaults
-                      exec-path-from-shell
-                      google-c-style
-                      helm-flx
-                      helm-projectile
-                      idle-highlight-mode
-                      key-chord
-                      load-dir
-                      paredit
-                      projectile
-                      helm-smex
-                      use-package
-                      yaml-mode
-                      ))
-;; installing not installed packages
-(package-initialize)
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+(setq use-package-verbose t)
+(setq nsm-settings-file "~/.emacs.local.d/var/nsm-settings.el")
+(setq package-user-dir "~/.emacs.local.d/elpa")
 
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package)
+  (eval-when-compile (require 'use-package)))
+
+;; increasing boot speed
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  (add-hook 'after-init-hook
+            (lambda () (message "loaded in %s" (emacs-init-time))))
+
+(setq old-gc-cons-threshold gc-cons-threshold)
+(setq gc-cons-threshold 10000000)
+
+;; Restore after startup
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold old-gc-cons-threshold)
+            (message "gc-cons-threshold restored to %S"
+                     gc-cons-threshold)))
+
+(defconst my-custom-file "~/.emacs.d/custom.el")
+(setq custom-file my-custom-file)
+(load custom-file)
+
+(use-package auto-package-update
+   :ensure t
+   :config
+   (setq auto-package-update-delete-old-versions t
+         auto-package-update-interval 14)
+   (auto-package-update-maybe))
 
 ;; helm
 (use-package helm
@@ -86,19 +96,6 @@
 (setq backup-by-copying-when-linked t)
 (setq backup-by-copying-when-mismatch t)
 (setq load-dirs t)
-
-;; package and repositories set up
-(require 'package)
-(add-to-list
- 'package-archives
- '("melpa" . "http://melpa.org/packages/"))
-(add-to-list
- 'package-archives
- '("marmalade" . "https://marmalade-repo.org/packages/"))
-
-(defconst my-custom-file "~/.emacs.d/custom.el")
-(setq custom-file my-custom-file)
-(load custom-file t)
 
 (setq backup-by-copying-when-linked t)
 (put 'narrow-to-region 'disabled nil)
@@ -171,11 +168,6 @@
   (interactive)
   (message (buffer-file-name)))
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-              (ggtags-mode 1))))
-(setq company-dabbrev-downcase nil)
 
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
@@ -199,11 +191,6 @@
   (if (file-exists-p local-settings)
   (load-file local-settings)))
 
-(use-package edit-server
-  :if window-system
-  :init
-  (add-hook 'after-init-hook 'server-start t)
-  (add-hook 'after-init-hook 'edit-server-start t))
 
 (use-package multiple-cursors
   :bind
@@ -212,25 +199,35 @@
   ("C-<" . mc/mark-previous-like-this)
   ("C-c C-<" . mc/mark-all-like-this))
 
-(use-package ggtags
-  :config
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-                (ggtags-mode 1))
-              (setq-local eldoc-documentation-function #'ggtags-eldoc-function))))
-
 (use-package projectile
   :ensure t
   :bind-keymap
   ("C-c p" . projectile-command-map)
   ("s-p" . projectile-command-map)
   :config
-  (projectile-mode +1))
+  (projectile-mode +1)
+  (add-to-list 'projectile-globally-ignored-directories "remote"))
 
 (use-package helm-projectile
   :config
   (helm-projectile-on))
+
+(use-package tramp
+  :ensure nil
+  :config (progn
+            (setq tramp-use-ssh-controlmaster-options nil
+                  tramp-verbose 1
+                  vc-ignore-dir-regexp (format "%s\\|%s"
+                                               vc-ignore-dir-regexp
+                                               tramp-file-name-regexp))))
+(use-package helm-tramp
+  :after (helm tramp)
+  :init
+  (setq tramp-default-method "ssh")
+  :hook (helm-tramp-pre-command-hook . (lambda () (global-aggressive-indent-mode 0)
+				                         (projectile-mode 0)
+				                         (editorconfig-mode 0)))
+  :bind ("C-c s" . helm-tramp))
 
 (defun dwim-backward-kill-word ()
   "DWIM kill characters backward until encountering the beginning of a
@@ -256,3 +253,18 @@ word or non-word."
     (backward-char))
   (forward-char))
 (global-set-key (kbd "M-DEL") 'dwim-backward-kill-word)
+
+(global-set-key (kbd "M-o") 'ace-window)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(go-mode yasnippet company-lsp lsp-ui editorconfig rtags flycheck-irony company-irony company irony no-littering yaml-mode use-package-ensure-system-package paredit load-dir key-chord idle-highlight-mode helm-smex helm-projectile helm-flx google-c-style exec-path-from-shell better-defaults auto-package-update ace-window)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
