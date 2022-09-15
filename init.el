@@ -154,9 +154,9 @@
    kept-old-versions 2
    version-control t)       ; use versioned backups
 
-(require 'key-chord)
-(add-hook 'c-mode-common-hook '(lambda ()
-                                 (key-chord-mode t)))
+;(require 'key-chord)
+;(add-hook 'c-mode-common-hook '(lambda ()
+;                                 (key-chord-mode t)))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 (global-set-key (kbd "C-s-<left>") 'previous-buffer)
