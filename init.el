@@ -1,15 +1,24 @@
+(setq package-enable-at-startup nil)
 (setq use-package-verbose t)
+(setq straight-use-package-by-default t)
 (setq nsm-settings-file "~/.emacs.local.d/var/nsm-settings.el")
 (setq package-user-dir "~/.emacs.local.d/elpa")
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+;; Install straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package)
-  (eval-when-compile (require 'use-package)))
+(straight-use-package 'use-package)
 
 ;; increasing boot speed
 (use-package benchmark-init
@@ -34,27 +43,19 @@
 (setq custom-file my-custom-file)
 (load custom-file)
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  ;; environment variabes from shell on mac
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)))
+
 (use-package auto-package-update
    :ensure t
    :config
    (setq auto-package-update-delete-old-versions t
          auto-package-update-interval 14)
    (auto-package-update-maybe))
-
-;; helm
-(use-package helm
-  :config
-  (require 'helm-config)
-  (setq helm-mode-fuzzy-match t)
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (setq helm-buffers-fuzzy-matching t
-        helm-recentf-fuzzy-match    t)
-  (helm-autoresize-mode t)
-  (helm-mode +1)
-  :bind
-  ("M-x" . helm-M-x)
-  ("C-x C-f" . helm-find-files)
-  ("C-x C-r" . helm-recentf))
 
 ;; no-littering
 (use-package no-littering
@@ -124,10 +125,6 @@
 (setq recentf-max-menu-items 25)
 (run-at-time nil (* 5 60) 'recentf-save-list)
 
-;; environment variabes from shell on mac
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
-
 ;(require 'helm-smex)
 ;(global-set-key [remap execute-extended-command] #'helm-smex)
 ;(global-set-key (kbd "M-X") #'helm-smex-major-mode-commands)
@@ -193,6 +190,8 @@
 
 
 (use-package multiple-cursors
+  :demand t
+  :ensure t
   :bind
   ("C-S-c C-S-c" . mc/edit-lines)
   ("C->" . mc/mark-next-like-this)
@@ -268,3 +267,71 @@ word or non-word."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; ;; helm
+;; (use-package helm
+;;   :straight t
+;;   :ensure t
+;;   :requires helm-config
+;;   :config
+;;   (require 'helm-config)
+;;   (setq helm-mode-fuzzy-match t)
+;;   (global-set-key (kbd "C-x b") 'helm-mini)
+;;   (global-set-key (kbd "M-x") 'helm-M-x)
+;;   (setq helm-candidate-number-limit 100)
+;;   (setq helm-idle-delay 0.0
+;;         helm-input-idle-delay 0.01
+;;         helm-yas-display-key-on-candidate t
+;;         helm-quick-update t
+;;         helm-M-x-requires-pattern nil)
+;;   (setq helm-buffers-fuzzy-matching t
+;;         helm-recentf-fuzzy-match    t)
+;;   (helm-autoresize-mode t)
+;;   (helm-mode)
+;;   :bind
+;;   ("M-x" . helm-M-x)
+;;   ("C-x C-f" . helm-find-files)
+;;   ("C-x C-r" . helm-recentf))
+
+(use-package helm
+  :demand t
+  :diminish helm-mode
+  :init
+  (progn
+    (require 'helm-config)
+    (setq helm-candidate-number-limit 100)
+    (setq helm-idle-delay 0.0
+          helm-input-idle-delay 0.01
+          helm-yas-display-key-on-candidate t
+          helm-quick-update t
+          helm-M-x-requires-pattern nil)
+    (helm-mode)
+    )
+  :bind (
+         ("C-h a" . helm-apropos)
+         ("C-x C-b" . helm-buffers-list)
+         ("C-x b" . helm-buffers-list)
+         ("M-y" . helm-show-kill-ring)
+         ("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-c h o" . helm-occur)
+         ("C-c h r" . helm-register)
+         ("C-c h b" . helm-resume)
+         ("C-x C-r" . helm-recentf)
+         )
+  :config
+  (setq helm-command-prefix-key "C-c h")
+  (setq helm-autoresize-min-height 25)
+  (setq helm-autoresize-max-height 25)
+  (setq helm-split-window-in-side-p t
+        helm-move-to-line-cycle-in-source t
+        helm-ff-search-library-in-sexp t
+        helm-scroll-amount 8
+        helm-ff-file-name-history-use-recentf t)
+  (setq helm-buffer-max-length nil)
+  (helm-mode 1)
+  (helm-autoresize-mode 1)
+  (define-key  helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  (define-key  helm-map (kbd "C-i") 'helm-execute-persistent-action)
+  (define-key  helm-map (kbd "C-z") 'helm-select-action)
+  :ensure helm)

@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(nsm-settings-file "~/.emacs.local.d/var/nsm-settings.el")
  '(package-selected-packages
-   '(impatient-mode go-mode yasnippet company-lsp lsp-ui editorconfig rtags flycheck-irony company-irony company irony no-littering yaml-mode use-package-ensure-system-package paredit load-dir key-chord idle-highlight-mode helm-smex helm-projectile helm-flx google-c-style exec-path-from-shell better-defaults auto-package-update ace-window))
+   '(multiple-cursors go-mode yasnippet company-lsp lsp-ui editorconfig rtags flycheck-irony company-irony company irony no-littering yaml-mode use-package-ensure-system-package paredit load-dir key-chord idle-highlight-mode helm-smex helm-projectile helm-flx google-c-style exec-path-from-shell better-defaults auto-package-update ace-window))
  '(package-user-dir "~/.emacs.local.d/elpa")
  '(recentf-auto-cleanup 'never)
  '(recentf-max-saved-items 100)
